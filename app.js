@@ -73,7 +73,7 @@ const Services = mongoose.model('services', serviceSchema);
 
 //
 
-app.get("/api/home", async (req, res) => {
+app.get("/api/services", async (req, res) => {
 
   try {
     // Assuming you want to fetch all documents from the 'bank_name' collection
