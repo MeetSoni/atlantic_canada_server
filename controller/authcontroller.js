@@ -20,18 +20,25 @@ async function handleUserSignup(req, res) {
     // Replace the plain text password with the hashed password
     data.password = hashedPassword;
     console.log(data.password);
-    // Insert new user data into the database
-    const user = await users.create(data);
+    const exist =await users.findOne({email:data.email})
 
-    // Generate JWT token
-    const token = createToken(user._id); // Assuming user has _id field
+    if(exist){
+      res.send({"status":"failed","message":"Email alredy Exists"})
+    }
+  else{
+      // Insert new user data into the database
+      const user = await users.create(data);
 
-    // Set the token as a cookie
-    res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
-
-    // Respond with the user data and token
-    res.status(200).json({ user, token });
-
+      // Generate JWT token
+      const token = createToken(user._id); // Assuming user has _id field
+  
+      // Set the token as a cookie
+      res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
+  
+      // Respond with the user data and token
+      res.status(200).json({ user, token });
+  
+  }
   } catch (error) {
     console.error('Error creating user:', error);
     res.status(500).json({ error: 'Internal Server Error' });
