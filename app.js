@@ -30,7 +30,7 @@ app.use(bodyParser.json());
 app.use(express.static('public'));
 app.use(express.json());
 app.use(cookieParser());
-app.use("/user/",authRoutes);
+app.use("/api/user/",authRoutes);
 app.use(cors({
   credentials:true,
   origin:['http://localhost:3000']
