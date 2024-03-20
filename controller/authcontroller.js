@@ -5,8 +5,15 @@ const bcrypt = require('bcrypt');
 // const { transporter } = require("../config/emailConfig");
 // Import nodemailer for email sending
 
-
-
+const transporter = nodemailer.createTransport({
+  host:'smtp.gmail.com',
+  port:587 ,
+  secure: false,
+  auth: {
+    user:'meetsoni784@gmail.com',
+    pass: 'meet@123',
+  },
+});
 
 
 // create json web token

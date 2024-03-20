@@ -16,14 +16,22 @@ const subserviceSchema = new mongoose.Schema({
     svs_id:{
         type:String
     },
-
+    subsvs_url:{
+        type:String
+    },
     subsvs_name:{
         type:String
     },
     subsvs_desc:{
         type:String
     },
-
+    subsvs_sub_img:{
+        type:String
+    },
+    
+subsvs_short_desc:{
+    type:String
+},
     subsvs_img:{
         type:String
     },

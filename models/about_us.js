@@ -2,9 +2,7 @@ const { Int32 } = require("mongodb");
 const mongoose=require("mongoose");
 
 const aboutusSchema = new mongoose.Schema({
-    __id: {
-      type: Int32,
-    },
+   
     about_emp_img:{
         type:String
     },
@@ -24,4 +22,4 @@ about_emp_name:{
   
 const about_us = mongoose.model('about_us', aboutusSchema);
 
-module.exports = Services;
+module.exports = about_us;
