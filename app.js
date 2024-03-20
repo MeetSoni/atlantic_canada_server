@@ -13,6 +13,7 @@ const PORT = 5500;
 
 const router = express.Router();
 const users = require("./models/user");
+const about_us=require('./models/about_us');
 const svs_bank=require("./models/svs_bank");
 const svs_gas_stations=require("./models/svs_gas_stations");
 const svs_grocery_stores=require("./models/svs_grocery_stores");
@@ -71,7 +72,7 @@ const Services = mongoose.model('services', serviceSchema);
 
 
 
-//
+
 
 app.get("/api/services", async (req, res) => {
 
