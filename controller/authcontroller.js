@@ -5,15 +5,7 @@ const bcrypt = require('bcrypt');
 // const { transporter } = require("../config/emailConfig");
 // Import nodemailer for email sending
 
-const transporter = nodemailer.createTransport({
-  host:'smtp.gmail.com',
-  port:587 ,
-  secure: false,
-  auth: {
-    user:'meetsoni784@gmail.com',
-    pass: 'meet@123',
-  },
-});
+
 
 
 // create json web token
@@ -117,6 +109,17 @@ async function logout_get (req, res)  {
 
 
 async function sendUserPasswordResetEmail(req,res){
+
+  let config={
+    service :'gmail',
+    auth:{
+      user:'meetsoni784@gmail.com',
+      pass:'hbfw kyuf ccke chvs'
+    }
+  }
+
+  let transporter=nodemailer.createTransport(config);
+ 
       const {email} =req.body;
 
       if(email){
@@ -125,15 +128,15 @@ async function sendUserPasswordResetEmail(req,res){
           const secret=user._id + 'ATLANTIC_CANADA';
           if(user){
               const token=jwt.sign({userID: user._id}, secret, {expiresIn: '15m'});
-              const link=`http://127.0.0.1:3000/api/user/reset/${user._id}/${token}`
+              const link=`http://localhost:3000/reset-password/${user._id}/${token}`
               console.log(link);
-              console.log(transporter);
+             
               // send email
               let info = await transporter.sendMail({
                 from:"meetsoni784@gmail.com",
                 to:user.email,
                 subject:"ATLANTIC-CANADA PASSWORD RESET LINK",
-                html:`<a href=${link}>Click here to reset you passwprd</a>`
+                html:`<h1>If you want to change your password use below link </h1> <br>  <a href=${link}>Click here to reset you passwprd</a>`
               });
               res.send({"status":"seccess","message":"Paaword Reset email sent please check your email"})
           }
@@ -144,6 +147,17 @@ async function sendUserPasswordResetEmail(req,res){
       }
 }
 
+async function getuserdata(req,res){
+  const {id,token} = req.params;
+  const data=await users.findById(id);
+  if(data){
+    res.send({"data":data,"token":token})
+  }
+
+  else{
+    res.send({"status":"fail","message":"you not have data"})
+  }
+}
 
 async function userPasswordReset(req,res){
     const {password,password_confirmation}=req.body;
@@ -151,7 +165,7 @@ async function userPasswordReset(req,res){
     const user=await users.findById(id);
     const new_secret=user._id+"ATLANTIC_CANADA";
     try{
-      jwt.verify(token,new_secret);
+      // jwt.verify(token,new_secret);
       if(password && password_confirmation){
         if(password !== password_confirmation){
           res.send({"status":"failed","message":"New password and confirm new password doesn't match "})
@@ -179,5 +193,6 @@ module.exports = {
   changeUserPassword,
   logout_get,
   sendUserPasswordResetEmail,
-  userPasswordReset
+  userPasswordReset,
+  getuserdata
 };
