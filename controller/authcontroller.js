@@ -128,7 +128,7 @@ async function sendUserPasswordResetEmail(req,res){
           const secret=user._id + 'ATLANTIC_CANADA';
           if(user){
               const token=jwt.sign({userID: user._id}, secret, {expiresIn: '15m'});
-              const link=`http://localhost:3000/reset-password/${user._id}/${token}`
+              const link=`https://atlantic-canada-client.vercel.app/reset-password/${user._id}/${token}`
               console.log(link);
              
               // send email
