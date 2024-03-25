@@ -24,6 +24,7 @@ const svs_rdside_asist=require("./models/svs_rdside_asist");
 const svs_imgn_consult=require("./models/svs_imgn_consult");
 const youtube_links=require("./models/youtube_links");
 const sub_services=require("./models/sub_services");
+const provinces=require("./models/provinces");
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -327,6 +328,31 @@ app.get("/api/youtube",async(req,res)=>{
     
    
     const data = await youtube_links.find({});
+   const newdata=JSON.parse(JSON.stringify(data));
+   ;
+   console.log(newdata);
+    res.json(newdata);
+  
+    
+      console.log("data fetching done")
+    
+
+  
+
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+})
+
+
+// get all provinces
+
+app.get("/api/province",async(req,res)=>{
+  try {
+    
+   
+    const data = await provinces.find({});
    const newdata=JSON.parse(JSON.stringify(data));
    ;
    console.log(newdata);
