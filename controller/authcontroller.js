@@ -89,7 +89,8 @@ async function handleUserLogin(req, res) {
 
     res.send({
       message:'success',
-      token:token
+      token:token,
+      email:user.email
     })
 
   } catch (error) {
