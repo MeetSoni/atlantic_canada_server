@@ -88,7 +88,7 @@ async function handleUserLogin(req, res) {
     console.log(token);
 
     res.send({
-      message:'success',
+     
       token:token,
       email:user.email
     })
