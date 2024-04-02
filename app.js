@@ -370,6 +370,27 @@ app.get("/api/province",async(req,res)=>{
   }
 })
 
+// get all user by ID 
+
+app.get("/api/getdatabyemail/:param1", async (req, res) => {
+  try {
+    const email = req.params.param1;
+    const data = await users.find({email: email});
+ const newdata=JSON.parse(JSON.stringify(data));
+
+  
+    
+    if (!data) {
+      return res.status(404).json({ error: 'Data not found' });
+    }
+    
+    res.json(newdata);
+    console.log("Data fetching done");
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
