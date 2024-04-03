@@ -442,6 +442,29 @@ app.put("/api/profileupdate/:email", async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+// get all homeprovinces
+
+app.get("/api/home_provinces",async(req,res)=>{
+  try {
+    
+   
+    const data = await home_provinces.find({});
+   const newdata=JSON.parse(JSON.stringify(data));
+   ;
+  //  console.log(newdata);
+    res.json(newdata);
+  
+    
+      // console.log("data fetching done")
+    
+
+  
+
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+})
 
 
 
