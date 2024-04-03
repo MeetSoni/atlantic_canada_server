@@ -418,6 +418,30 @@ app.put("/api/profileupdate/:email", async (req, res) => {
   }
 });
 
+
+
+// Delete Account
+
+app.delete("/api/deleteaccount/:email",async(req, res)=>{
+
+  const { email } = req.params;
+
+  try {
+    // Find and delete the user with the given email
+    const result = await users.findOneAndDelete({ email });
+
+    if (result) {
+      res.status(200).json({ message: 'Account deleted successfully' });
+    } else {
+      res.status(404).json({ error: 'User not found' });
+    }
+  } catch (err) {
+    console.error('Error deleting account:', err);
+    res.status(500).json({ error: 'An error occurred while deleting account' });
+  }
+
+});
+
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
 });
