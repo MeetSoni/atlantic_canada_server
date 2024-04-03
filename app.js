@@ -370,6 +370,31 @@ app.get("/api/province",async(req,res)=>{
   }
 })
 
+app.get("/api/province/:id",async(req,res)=>{
+  const itemId = req.params.id;
+  // console.log(itemId);
+  const updatedData = req.body; // Assuming the updated data is sent in the request body
+  // console.log(updatedData);
+  try {
+    // Find the document by ID and update it
+    const updatedDocument = await home_provinces.findByIdAndUpdate(itemId, updatedData, {
+      new: true, // Return the updated document
+      runValidators: true, // Run Mongoose validators on the update
+    });
+
+    if (!updatedDocument) {
+      return res.status(404).json({ error: 'Data not found' });
+    }
+
+    res.json(updatedDocument);
+    // console.log("Data updated successfully");
+
+  } catch (error) {
+    console.error('Error updating data:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+})
+
 // get all user by ID 
 
 app.get("/api/getdatabyemail/:param1", async (req, res) => {
