@@ -37,7 +37,7 @@ app.use(cors({
   origin:['http://localhost:3000']
 }))
 
-mongoose.connect('mongodb+srv://atlanticconnectapp:IP2jAAbLKTTikivP@cluster0.ywp5g3n.mongodb.net/Atlantic_Canada', {
+mongoose.connect('mongodb+srv://rushipatel8733074210:admin1234@cluster0.6awdf.mongodb.net/Atlantic_Canada', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
