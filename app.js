@@ -392,6 +392,32 @@ app.get("/api/getdatabyemail/:param1", async (req, res) => {
   }
 });
 
+// profile data update
+
+app.put("/api/profileupdate/:email", async (req, res) => {
+  const email = req.params.email;
+  console.log(email); // Get the email from the URL parameter
+  const updatedData = req.body; // Assuming the updated data is sent in the request body
+
+  try {
+    // Find the document by email and update it
+    const updatedDocument = await users.findOneAndUpdate({ email }, updatedData, {
+      new: true, // Return the updated document
+      runValidators: true, // Run Mongoose validators on the update
+    });
+
+    if (!updatedDocument) {
+      return res.status(404).json({ error: 'Data not found' });
+    }
+
+    res.json(updatedDocument);
+
+  } catch (error) {
+    console.error('Error updating data:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
 });
