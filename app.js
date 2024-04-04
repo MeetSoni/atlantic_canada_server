@@ -322,7 +322,7 @@ app.put("/update/:id", async (req, res) => {
 
 // subservice by svs_id and province_id
 
-app.get("/api/subservices/:svs_id/:province_id", async (req, res) => {
+app.get("/api/services/subservices/:svs_id/:province_id", async (req, res) => {
   try {
       const svs_id = req.params.svs_id;
       const province_id = req.params.province_id;
