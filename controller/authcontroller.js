@@ -40,11 +40,19 @@ async function handleUserSignup(req, res) {
       const saved_user = await users.findOne({email: user.email});
       console.log(saved_user);
     
-      res.send({
-        token:token,
-        email:user.email
-      })
-    ;
+      // Generate JWT token
+      const token = jwt.sign({userID: saved_user._id}, "ATLANTIC_CANADA", {expiresIn: '5d'}); // Assuming user has _id field
+    
+      // Set the token as a cookie with additional attributes
+      res.cookie('jwt', token, {
+        httpOnly: true, // Cookie is only accessible via HTTP(S)
+        maxAge: 5 * 24 * 60 * 60 * 1000, // 5 days expiration
+        sameSite: 'None', // Allow cross-origin requests
+        secure: true // Only send the cookie over HTTPS
+      });
+    
+      // Respond with the user data and token
+      res.status(201).json({ "status": "registration success", "token": token });
     
     }
   } catch (error) {
