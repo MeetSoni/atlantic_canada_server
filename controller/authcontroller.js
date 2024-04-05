@@ -89,7 +89,7 @@ async function handleUserLogin(req, res) {
 
     res.send({
       token:token,
-      data:{email:user.email, province_id:user.province_id }
+      data:{email:user.email, province_id:user.province_id, user_name: user.user_name }
     })
 
   } catch (error) {
