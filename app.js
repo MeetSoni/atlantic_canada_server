@@ -25,6 +25,8 @@ const svs_imgn_consult=require("./models/svs_imgn_consult");
 const youtube_links=require("./models/youtube_links");
 const sub_services=require("./models/sub_services");
 const provinces=require("./models/provinces");
+const home_provinces=require("./models/home_province");
+
 
 app.use(cors());
 app.use(bodyParser.json());
