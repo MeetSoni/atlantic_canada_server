@@ -15,6 +15,9 @@ const userSchema = new mongoose.Schema({
     },
     province_id:{
         type:String
+    },
+    province_name:{
+        type:String
     }
     
   });
