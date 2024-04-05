@@ -18,6 +18,9 @@ const userSchema = new mongoose.Schema({
     },
     province_name:{
         type:String
+    },
+    profile_image:{
+        type:String
     }
     
   });
