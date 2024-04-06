@@ -48,7 +48,7 @@ async function handleUserSignup(req, res) {
       // Respond with the user data and token
       res.send({
         token:token,
-        data:{email:user.email, province_id:user.province_id, user_name: user.user_name }
+        data:{email:user.email, province_id:user.province_id, user_name: user.user_name, profile_image: user.profile_image  }
       })
     
     }
@@ -86,7 +86,7 @@ async function handleUserLogin(req, res) {
 
     res.send({
       token:token,
-      data:{email:user.email, province_id:user.province_id, user_name: user.user_name }
+      data:{email:user.email, province_id:user.province_id, user_name: user.user_name, profile_image: user.profile_image }
     })
 
   } catch (error) {
