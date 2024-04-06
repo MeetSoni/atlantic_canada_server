@@ -326,8 +326,8 @@ app.put("/update/:id", async (req, res) => {
 
 app.get("/api/services/subservices", async (req, res) => {
   try {
-      const svs_id = req.params.serviceId;
-      const province_id = req.params.provinceId;
+      const svs_id = req.body.serviceId;
+      const province_id = req.body.provinceId;
 
       const data = await sub_services.find({ svs_id , province_id});
 
