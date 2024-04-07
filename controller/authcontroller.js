@@ -144,6 +144,39 @@ async function sendUserPasswordResetEmail(req,res){
       }
 }
 
+async function sendcontactinfo(req,res){
+
+  let config={
+    service :'gmail',
+    auth:{
+      user:'meetsoni784@gmail.com',
+      pass:'hbfw kyuf ccke chvs'
+    }
+  }
+
+  let transporter=nodemailer.createTransport(config);
+ 
+      const {email,name,message} =req.body;
+
+      if(email){
+          
+             
+              // send email
+              let info = await transporter.sendMail({
+                from:"meetsoni784@gmail.com",
+                to:"meetsoni784@gmail.com",
+                subject:"ATLANTIC-CANADA PASSWORD RESET LINK",
+                html:`${email,name,password}`
+              });
+              res.send({"status":"seccess","message":"Paaword Reset email sent please check your email"})
+          
+      }
+
+      else{
+        res.send({"status":"failed","message":"email doesn't exists"})
+      }
+}
+
 async function getuserdata(req,res){
   const {id,token} = req.params;
   const data=await users.findById(id);
@@ -191,5 +224,6 @@ module.exports = {
   logout_get,
   sendUserPasswordResetEmail,
   userPasswordReset,
-  getuserdata
+  getuserdata,
+  sendcontactinfo
 };
