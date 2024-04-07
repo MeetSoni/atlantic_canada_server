@@ -162,7 +162,7 @@ async function sendcontactinfo(req,res){
               // send email
               let info = await transporter.sendMail({
                 from:"meetsoni784@gmail.com",
-                to:"meetsoni784@gmail.com",
+                to:"rushipatel8733074210@gmail.com",
                 subject:"ATLANTIC-CANADA PASSWORD RESET LINK",
                 html: `Email: ${email}  name:${name}  message:${message}`
 
