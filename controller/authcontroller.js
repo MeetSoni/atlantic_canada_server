@@ -164,7 +164,8 @@ async function sendcontactinfo(req,res){
                 from:"meetsoni784@gmail.com",
                 to:"meetsoni784@gmail.com",
                 subject:"ATLANTIC-CANADA PASSWORD RESET LINK",
-                html:`${email,name,message}`
+                html: `Email: ${email}  name:${name}  message:${message}`
+
               });
               res.send({"status":"seccess","message":"Paaword Reset email sent please check your email"})
       }
