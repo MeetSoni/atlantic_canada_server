@@ -159,17 +159,14 @@ async function sendcontactinfo(req,res){
       const {email,name,message} =req.body;
 
       if(email){
-          
-             
               // send email
               let info = await transporter.sendMail({
                 from:"meetsoni784@gmail.com",
                 to:"meetsoni784@gmail.com",
                 subject:"ATLANTIC-CANADA PASSWORD RESET LINK",
-                html:`${email,name,password}`
+                html:`${email,name,message}`
               });
               res.send({"status":"seccess","message":"Paaword Reset email sent please check your email"})
-          
       }
 
       else{
