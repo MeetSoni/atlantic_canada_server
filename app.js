@@ -48,7 +48,33 @@ mongoose.connect('mongodb+srv://atlanticconnectapp:IP2jAAbLKTTikivP@cluster0.ywp
   })
   .catch((err) => console.log("Getting an error:", err));
 
+  // AWS CRED
+  const AWS = require('aws-sdk');
+  const s3 = new AWS.S3({
+    accessKeyId: "AKIAZQ3DOTFLP2L7QU62",
+    secretAccessKey:"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"
+  });
 
+  //METHODE TO UPLOAD PHOTO ON S3
+  
+  const uploadToS3 = (file) => {
+    const params = {
+        Bucket: 'capstoneatlantic',
+        Key: file.originalname,
+        Body: file.buffer,
+        ContentType: file.mimetype
+    };
+  
+    return new Promise((resolve, reject) => {
+        s3.upload(params, (err, data) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(data.Location);
+            }
+        });
+    });
+  };
 
 
 const serviceSchema = new mongoose.Schema({
@@ -511,6 +537,28 @@ app.delete("/api/deleteaccount/:email",async(req, res)=>{
   }
 
 });
+
+
+// ADD PROFILE PHOTO
+app.post("/api/addprofilepic",upload.single('file'), async (req, res) => {
+
+  try {
+    // Upload file to Amazon S3
+    const fileUrl = await uploadToS3(req.file);
+    console.log(fileUrl);
+
+    // Save file URL to MongoDB
+    // await saveFileURLToMongoDB(fileUrl);
+
+    // Send response to client
+    res.status(200).json({ message: 'File uploaded successfully', url: fileUrl });
+} catch (err) {
+    console.error('Error handling file upload:', err);
+    res.status(500).json({ error: 'Error handling file upload' });
+}
+
+}
+);
 
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
