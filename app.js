@@ -108,6 +108,11 @@ app.get("/api/about_us", async (req, res) => {
   try {
     // Assuming you want to fetch all documents from the 'bank_name' collection
     res.header("Access-Control-Allow-Origin", "*")
+    res.setHeader(
+      "Access-Control-Allow-Methods",
+      "OPTIONS, GET, POST, PUT, PATCH, DELETE"
+    );
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
     const data = await about_us.find({});
     console.log(data);
 
