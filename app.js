@@ -7,6 +7,7 @@ const cookieParser = require('cookie-parser');
 const mongoose = require("mongoose");
 const cors = require("cors");
 const authRoutes = require('./routes/authRoutes');
+require('dotenv').config();
 
 const app = express();
 const PORT = 5500;
@@ -51,8 +52,8 @@ mongoose.connect('mongodb+srv://atlanticconnectapp:IP2jAAbLKTTikivP@cluster0.ywp
   // AWS CRED
   const AWS = require('aws-sdk');
   const s3 = new AWS.S3({
-    accessKeyId: "AKIAZQ3DOTFLP2L7QU62",
-    secretAccessKey:"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"
+    accessKeyId: process.env.accessKeyId,
+    secretAccessKey:process.env.secretAccessKey
   });
 
   //METHODE TO UPLOAD PHOTO ON S3
