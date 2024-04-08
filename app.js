@@ -129,6 +129,11 @@ app.get("/api/services", async (req, res) => {
 
   try {
     res.header("Access-Control-Allow-Origin", "*")
+    res.setHeader(
+      "Access-Control-Allow-Methods",
+      "OPTIONS, GET, POST, PUT, PATCH, DELETE"
+    );
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
     // Assuming you want to fetch all documents from the 'bank_name' collection
     
     const data = await Services.find({});
