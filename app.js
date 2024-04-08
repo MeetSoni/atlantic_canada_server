@@ -107,12 +107,7 @@ app.get("/api/about_us", async (req, res) => {
 
   try {
     // Assuming you want to fetch all documents from the 'bank_name' collection
-    res.header("Access-Control-Allow-Origin", "*")
-    res.setHeader(
-      "Access-Control-Allow-Methods",
-      "OPTIONS, GET, POST, PUT, PATCH, DELETE"
-    );
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    
     const data = await about_us.find({});
     console.log(data);
 
@@ -128,12 +123,6 @@ app.get("/api/about_us", async (req, res) => {
 app.get("/api/services", async (req, res) => {
 
   try {
-    res.header("Access-Control-Allow-Origin", "*")
-    res.setHeader(
-      "Access-Control-Allow-Methods",
-      "OPTIONS, GET, POST, PUT, PATCH, DELETE"
-    );
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
     // Assuming you want to fetch all documents from the 'bank_name' collection
     
     const data = await Services.find({});
@@ -153,7 +142,7 @@ app.get("/api/subservices", async (req, res) => {
 
   try {
     // Assuming you want to fetch all documents from the 'bank_name' collection
-    res.header("Access-Control-Allow-Origin", "*")
+    
     const data = await sub_services.find({});
     console.log(data);
 
