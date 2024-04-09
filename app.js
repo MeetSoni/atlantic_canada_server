@@ -28,7 +28,6 @@ const sub_services=require("./models/sub_services");
 const provinces=require("./models/provinces");
 const home_provinces=require("./models/home_province");
 
-
 app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static('public'));
@@ -40,6 +39,74 @@ app.use(cors({
   origin:['http://localhost:3000']
 }))
 
+
+
+const multer = require('multer');
+
+const storage = multer.memoryStorage();
+ upload = multer({ storage: storage });
+
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
+
+ upload = multer({ storage: storage, fileFilter: fileFilter });
+
+
+ const AWS = require('aws-sdk');
+  const s3 = new AWS.S3({
+    accessKeyId: process.env.accessKeyId,
+    secretAccessKey:process.env.secretAccessKey
+  });
+
+// Multer configuration to handle file uploads
+ upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024 } // Limit file size to 5MB
+});
+
+
+const uploadToS3 = (file) => {
+  const params = {
+      Bucket: 'capstoneatlantic',
+      Key: file.originalname,
+      Body: file.buffer,
+      ContentType: file.mimetype
+  };
+
+  return new Promise((resolve, reject) => {
+      s3.upload(params, (err, data) => {
+          if (err) {
+              reject(err);
+          } else {
+              resolve(data.Location);
+          }
+      });
+  });
+};
+
+
+// Function to save file URL to MongoDB
+const saveFileURLToMongoDB = async (url) => {
+  const client = new MongoClient(mongoURI, { useUnifiedTopology: true });
+  try {
+      await client.connect();
+      const db = client.db(dbName);
+      
+      await sub.insertOne({ url });
+      console.log('File URL saved to MongoDB');
+  } catch (err) {
+      console.error('Error saving file URL to MongoDB:', err);
+  } finally {
+      await client.close();
+  }
+};
+const dbName="Atlantic_Canada"
+const mongoURI='mongodb+srv://atlanticconnectapp:IP2jAAbLKTTikivP@cluster0.ywp5g3n.mongodb.net//';
 mongoose.connect('mongodb+srv://atlanticconnectapp:IP2jAAbLKTTikivP@cluster0.ywp5g3n.mongodb.net/Atlantic_Canada', {
   useNewUrlParser: true,
   useUnifiedTopology: true
@@ -49,33 +116,7 @@ mongoose.connect('mongodb+srv://atlanticconnectapp:IP2jAAbLKTTikivP@cluster0.ywp
   })
   .catch((err) => console.log("Getting an error:", err));
 
-  // AWS CRED
-  const AWS = require('aws-sdk');
-  const s3 = new AWS.S3({
-    accessKeyId: process.env.accessKeyId,
-    secretAccessKey:process.env.secretAccessKey
-  });
 
-  //METHODE TO UPLOAD PHOTO ON S3
-  
-  const uploadToS3 = (file) => {
-    const params = {
-        Bucket: 'capstoneatlantic',
-        Key: file.originalname,
-        Body: file.buffer,
-        ContentType: file.mimetype
-    };
-  
-    return new Promise((resolve, reject) => {
-        s3.upload(params, (err, data) => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(data.Location);
-            }
-        });
-    });
-  };
 
 
 const serviceSchema = new mongoose.Schema({
@@ -109,10 +150,10 @@ app.get("/api/about_us", async (req, res) => {
     // Assuming you want to fetch all documents from the 'bank_name' collection
     
     const data = await about_us.find({});
-    console.log(data);
+    // console.log(data);
 
     res.json(data);
-    console.log("data fetching done")
+    // console.log("data fetching done")
 
   } catch (error) {
     console.error('Error fetching data:', error);
@@ -126,10 +167,10 @@ app.get("/api/services", async (req, res) => {
     // Assuming you want to fetch all documents from the 'bank_name' collection
     
     const data = await Services.find({});
-    console.log(data);
+    // console.log(data);
 
     res.json(data);
-    console.log("data fetching done")
+    // console.log("data fetching done")
 
   } catch (error) {
     console.error('Error fetching data:', error);
@@ -144,10 +185,10 @@ app.get("/api/subservices", async (req, res) => {
     // Assuming you want to fetch all documents from the 'bank_name' collection
     
     const data = await sub_services.find({});
-    console.log(data);
+    // console.log(data);
 
     res.json(data);
-    console.log("data fetching done")
+    // console.log("data fetching done")
 
   } catch (error) {
     console.error('Error fetching data:', error);
@@ -158,12 +199,12 @@ app.get("/api/subservices", async (req, res) => {
 
 app.get("/update/:id", async (req, res) => {
     const itemId = req.params.id;
-    console.log(itemId);
+    // console.log(itemId);
   
     try {
       // Assuming Services is your Mongoose model
       const data = await Services.findById(itemId); // Use findById directly
-      console.log(data);
+      // console.log(data);
   
       if (!data) {
         // If no data is found for the given ID
@@ -171,7 +212,7 @@ app.get("/update/:id", async (req, res) => {
       }
   
       res.json(data);
-      console.log("Data fetching done");
+      // console.log("Data fetching done");
   
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -186,28 +227,9 @@ app.post("/api/services/adddata", async (req, res) => {
       const data=req.body;
     //   console.log("data fetching done")
       result=res.json(data);
-      console.log(data);
+      // console.log(data);
 
       const service=await Services.insertMany(data);
-      console.log("data added")
-  
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      res.status(500).json({ error: 'Internal Server Error' });
-    }
-  });
-
-  app.post("/api/subservices/adddata", async (req, res) => {
-
-    try {
-      console.log("welcome to my methode")
-      const data=req.body;
-      console.log(data);
-      
-    //   console.log("data fetching done")
-      result=res.json(data);
-
-      // const service=await sub_services.insertMany(data);
       // console.log("data added")
   
     } catch (error) {
@@ -215,6 +237,46 @@ app.post("/api/services/adddata", async (req, res) => {
       res.status(500).json({ error: 'Internal Server Error' });
     }
   });
+
+  app.post("/api/subservices/adddata",upload.single('file'), async (req, res) => {
+
+    try {
+      // Upload file to Amazon S3
+      const fileUrl = await uploadToS3(req.file);
+      console.log(fileUrl);
+
+      // Save file URL to MongoDB
+      // await saveFileURLToMongoDB(fileUrl);
+
+      // Send response to client
+      res.status(200).json({ message: 'File uploaded successfully', url: fileUrl });
+  } catch (err) {
+      console.error('Error handling file upload:', err);
+      res.status(500).json({ error: 'Error handling file upload' });
+  }
+
+}
+  );
+
+  app.post("/api/subservices/addservicedata", async (req, res) => {
+
+    try {
+      const data=req.body;
+    //   console.log("data fetching done")
+      result=res.json(data);
+      console.log(data);
+
+      const service=await sub_services.insertMany(data);
+      // console.log("data added")
+      
+  } catch (err) {
+      console.error('Error handling file upload:', err);
+      res.status(500).json({ error: 'Error handling file upload' });
+  }
+
+}
+  );
+
 
 
 // delete data
@@ -260,9 +322,9 @@ app.delete('/subservice/delete/:id', async (req, res) => {
 
 app.put("/update/:id", async (req, res) => {
     const itemId = req.params.id;
-    console.log(itemId);
+    // console.log(itemId);
     const updatedData = req.body; // Assuming the updated data is sent in the request body
-    console.log(updatedData);
+    // console.log(updatedData);
     try {
       // Find the document by ID and update it
       const updatedDocument = await Services.findByIdAndUpdate(itemId, updatedData, {
@@ -275,7 +337,7 @@ app.put("/update/:id", async (req, res) => {
       }
   
       res.json(updatedDocument);
-      console.log("Data updated successfully");
+      // console.log("Data updated successfully");
   
     } catch (error) {
       console.error('Error updating data:', error);
@@ -293,10 +355,10 @@ app.put("/update/:id", async (req, res) => {
       // Assuming you want to fetch all documents from the 'bank_name' collection
       
       const data = await users.find({});
-      console.log(data);
+      // console.log(data);
   
       res.json(data);
-      console.log("data fetching done")
+      // console.log("data fetching done")
   
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -320,7 +382,7 @@ app.put("/update/:id", async (req, res) => {
       }
       
       res.json(newdata);
-      console.log("Data fetching done");
+      // console.log("Data fetching done");
     } catch (error) {
       console.error('Error fetching data:', error);
       res.status(500).json({ error: 'Internal Server Error' });
@@ -340,35 +402,15 @@ app.put("/update/:id", async (req, res) => {
       if (!data) {
         return res.status(404).json({ error: 'Data not found' });
       }
-      console.log(newdata)
+      // console.log(newdata)
       res.json(data);
-      console.log("Data fetching done");
+      // console.log("Data fetching done");
     } catch (error) {
       console.error('Error fetching data:', error);
       res.status(500).json({ error: 'Internal Server Error' });
     }
   });
 
-// subservice by svs_id and province_id
-
-app.post("/api/services/subservices", async (req, res) => {
-  try {
-      const svs_id = req.body.serviceId;
-      const province_id = req.body.provinceId;
-
-      const data = await sub_services.find({ svs_id , province_id});
-
-      if (!data || data.length === 0) {
-          return res.status(404).json({ error: 'Data not found' });
-      }
-
-      res.json(data);
-      console.log("Data fetching done");
-  } catch (error) {
-      console.error('Error fetching data:', error);
-      res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
 
 
 //youtube api
@@ -379,11 +421,11 @@ app.get("/api/youtube",async(req,res)=>{
     const data = await youtube_links.find({});
    const newdata=JSON.parse(JSON.stringify(data));
    ;
-   console.log(newdata);
+  //  console.log(newdata);
     res.json(newdata);
   
     
-      console.log("data fetching done")
+      // console.log("data fetching done")
     
 
   
@@ -404,11 +446,11 @@ app.get("/api/province",async(req,res)=>{
     const data = await provinces.find({});
    const newdata=JSON.parse(JSON.stringify(data));
    ;
-   console.log(newdata);
+  //  console.log(newdata);
     res.json(newdata);
   
     
-      console.log("data fetching done")
+      // console.log("data fetching done")
     
 
   
@@ -419,78 +461,9 @@ app.get("/api/province",async(req,res)=>{
   }
 })
 
-app.get("/api/province/:id",async(req,res)=>{
-  const itemId = req.params.id;
-  // console.log(itemId);
-  const updatedData = req.body; // Assuming the updated data is sent in the request body
-  // console.log(updatedData);
-  try {
-    // Find the document by ID and update it
-    const updatedDocument = await home_provinces.findByIdAndUpdate(itemId, updatedData, {
-      new: true, // Return the updated document
-      runValidators: true, // Run Mongoose validators on the update
-    });
 
-    if (!updatedDocument) {
-      return res.status(404).json({ error: 'Data not found' });
-    }
 
-    res.json(updatedDocument);
-    // console.log("Data updated successfully");
 
-  } catch (error) {
-    console.error('Error updating data:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-})
-
-// get all user by ID 
-
-app.get("/api/getdatabyemail/:param1", async (req, res) => {
-  try {
-    const email = req.params.param1;
-    const data = await users.find({email: email});
- const newdata=JSON.parse(JSON.stringify(data));
-
-  
-    
-    if (!data) {
-      return res.status(404).json({ error: 'Data not found' });
-    }
-    
-    res.json(newdata);
-    console.log("Data fetching done");
-  } catch (error) {
-    console.error('Error fetching data:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
-
-// profile data update
-
-app.put("/api/profileupdate/:email", async (req, res) => {
-  const email = req.params.email;
-  console.log(email); // Get the email from the URL parameter
-  const updatedData = req.body; // Assuming the updated data is sent in the request body
-
-  try {
-    // Find the document by email and update it
-    const updatedDocument = await users.findOneAndUpdate({ email }, updatedData, {
-      new: true, // Return the updated document
-      runValidators: true, // Run Mongoose validators on the update
-    });
-
-    if (!updatedDocument) {
-      return res.status(404).json({ error: 'Data not found' });
-    }
-
-    res.json(updatedDocument);
-
-  } catch (error) {
-    console.error('Error updating data:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
 // get all homeprovinces
 
 app.get("/api/home_provinces",async(req,res)=>{
@@ -516,6 +489,97 @@ app.get("/api/home_provinces",async(req,res)=>{
 })
 
 
+// get province data by id
+
+app.get("/province/:id",async(req,res)=>{
+  const itemId = req.params.id;
+  // console.log(itemId);
+  const updatedData = req.body; // Assuming the updated data is sent in the request body
+  // console.log(updatedData);
+  try {
+    // Find the document by ID and update it
+    const updatedDocument = await home_provinces.findByIdAndUpdate(itemId, updatedData, {
+      new: true, // Return the updated document
+      runValidators: true, // Run Mongoose validators on the update
+    });
+
+    if (!updatedDocument) {
+      return res.status(404).json({ error: 'Data not found' });
+    }
+
+    res.json(updatedDocument);
+    // console.log("Data updated successfully");
+
+  } catch (error) {
+    console.error('Error updating data:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+})
+
+app.get("/api/getdatabyemail/:param1", async (req, res) => {
+  try {
+    const email = req.params.param1;
+    const data = await users.find({email: email});
+ const newdata=JSON.parse(JSON.stringify(data));
+
+  
+    
+    if (!data) {
+      return res.status(404).json({ error: 'Data not found' });
+    }
+    
+    res.json(newdata);
+    // console.log("Data fetching done");
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
+
+// profile data update
+
+app.put("/api/profileupdate/:email", async (req, res) => {
+  try {
+      const email = req.params.email;
+      console.log(email); // Get the email from the URL parameter
+
+      const updatedData = req.body; // Assuming the updated data is sent in the request body
+      console.log("send data ", updatedData); // Log updated data
+      var profile_image = updatedData.profile_image;
+     
+       profile_image = new URL(profile_image);
+       profile_image = profile_image.href
+       console.log("profile_image data ", profile_image); // Log updated data
+      // Check if the email is valid (optional)
+      if (!email) {
+          return res.status(400).json({ error: 'Email address is required' });
+      }
+
+       const updatedDocument = await users.findOneAndUpdate({ email }, updatedData, {
+          new: true, // Return the updated document
+          runValidators: true, // Run Mongoose validators on the update
+          returnOriginal: false,
+      });
+
+      console.log("return data ", updatedDocument);
+    
+      res.json(updatedDocument);
+
+  }  catch (error) {
+    console.error('Error updating profile image:', error);
+
+    // Check specific error types and provide appropriate error messages
+    if (error.name === 'ValidationError') {
+        return res.status(400).json({ error: error.message });
+    }
+
+    // Handle other errors with a generic error message
+    res.status(500).json({ error: 'Internal Server Error' });
+}
+});
+
 
 // Delete Account
 
@@ -539,8 +603,48 @@ app.delete("/api/deleteaccount/:email",async(req, res)=>{
 
 });
 
+// app.get("/api/services/subservices/:svs_id/:province_id", async (req, res) => {
+//   try {
+//       const svs_id = req.params.svs_id;
+//       const province_id = req.params.province_id;
 
-// ADD PROFILE PHOTO
+//       const data = await sub_services.find({ svs_id , province_id });
+
+//       if (!data || data.length === 0) {
+//           return res.status(404).json({ error: 'Data not found' });
+//       }
+
+//       res.json(data);
+//       console.log("Data fetching done");
+//   } catch (error) {
+//       console.error('Error fetching data:', error);
+//       res.status(500).json({ error: 'Internal Server Error' });
+//   }
+// });
+
+app.post("/api/services/subservices", async (req, res) => {
+  try {
+    console.log("happy diwali")
+    console.log(req.body.serviceId)
+      const svs_id = req.body.serviceId;
+      const province_id = req.body.provinceId;
+
+      const data = await sub_services.find({ svs_id , province_id});
+
+      if (!data || data.length === 0) {
+          return res.status(404).json({ error: 'Data not found' });
+      }
+
+      res.json(data);
+      console.log("Data fetching done");
+  } catch (error) {
+      console.error('Error fetching data:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+// add profile photo
+
 app.post("/api/addprofilepic",upload.single('file'), async (req, res) => {
 
   try {
@@ -561,6 +665,23 @@ app.post("/api/addprofilepic",upload.single('file'), async (req, res) => {
 }
 );
 
+// sending contact us data 
+
+app.post("/api/sendcontact",upload.single('file'), async (req, res) => {
+
+  try {
+
+
+    
+} catch (err) {
+    console.error('Error handling file upload:', err);
+    res.status(500).json({ error: 'Error handling file upload' });
+}
+
+}
+);
+
+
 app.listen(PORT, () => {
-  console.log(`Server started on port ${PORT}`);
+  // console.log(`Server started on port ${PORT}`);
 });
