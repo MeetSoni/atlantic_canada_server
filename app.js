@@ -36,7 +36,7 @@ app.use(cookieParser());
 app.use("/api/user/",authRoutes);
 app.use(cors({
   credentials:true,
-  origin:['http://localhost:3000']
+ 
 }))
 
 
