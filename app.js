@@ -606,24 +606,24 @@ app.delete("/api/deleteaccount/:email",async(req, res)=>{
 
 });
 
-// app.get("/api/services/subservices/:svs_id/:province_id", async (req, res) => {
-//   try {
-//       const svs_id = req.params.svs_id;
-//       const province_id = req.params.province_id;
+app.get("/api/services/subservices/:svs_id/:province_id", async (req, res) => {
+  try {
+      const svs_id = req.params.svs_id;
+      const province_id = req.params.province_id;
 
-//       const data = await sub_services.find({ svs_id , province_id });
+      const data = await sub_services.find({ svs_id , province_id });
 
-//       if (!data || data.length === 0) {
-//           return res.status(404).json({ error: 'Data not found' });
-//       }
+      if (!data || data.length === 0) {
+          return res.status(404).json({ error: 'Data not found' });
+      }
 
-//       res.json(data);
-//       console.log("Data fetching done");
-//   } catch (error) {
-//       console.error('Error fetching data:', error);
-//       res.status(500).json({ error: 'Internal Server Error' });
-//   }
-// });
+      res.json(data);
+      console.log("Data fetching done");
+  } catch (error) {
+      console.error('Error fetching data:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
 app.post("/api/services/subservices", async (req, res) => {
   try {
