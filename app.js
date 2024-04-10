@@ -549,11 +549,14 @@ app.put("/api/profileupdate/:email", async (req, res) => {
       console.log("send data ", updatedData); // Log updated data
       var profile_image = updatedData.profile_image;
      
-       profile_image = new URL(profile_image);
-       profile_image = profile_image.href
-       console.log("profile_image data ", profile_image); // Log updated data
+      if(profile_image){
+        profile_image = new URL(profile_image);
+        profile_image = profile_image.href
+        console.log("profile_image data ", profile_image);
+      }
+      
       // Check if the email is valid (optional)
-      if (!email) {
+      else if (!email) {
           return res.status(400).json({ error: 'Email address is required' });
       }
 
