@@ -491,7 +491,7 @@ app.get("/api/home_provinces",async(req,res)=>{
 
 // get province data by id
 
-app.get("/province/:id",async(req,res)=>{
+app.get("/api/province/:id",async(req,res)=>{
   const itemId = req.params.id;
   // console.log(itemId);
   const updatedData = req.body; // Assuming the updated data is sent in the request body
