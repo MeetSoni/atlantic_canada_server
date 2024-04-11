@@ -110,8 +110,8 @@ async function sendUserPasswordResetEmail(req,res){
   let config={
     service :'gmail',
     auth:{
-      user:'meetsoni784@gmail.com',
-      pass:'hbfw kyuf ccke chvs'
+      user:'atlanticconnectapp@gmail.com',
+      pass:'xrnk vryq okla ywtz'
     }
   }
 
@@ -161,8 +161,8 @@ async function sendcontactinfo(req,res){
       if(email){
               // send email
               let info = await transporter.sendMail({
-                from:"meetsoni784@gmail.com",
-                to:"rushipatel8733074210@gmail.com",
+                from:"atlanticconnectapp@gmail.com",
+                to:"atlanticconnectapp@gmail.com",
                 subject:"ATLANTIC-CANADA PASSWORD RESET LINK",
                 html: `Email: ${email}  name:${name}  message:${message}`
 

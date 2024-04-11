@@ -12,7 +12,7 @@ app.get('/logout', logout_get);
 app.post('/send-reset-password-email',sendUserPasswordResetEmail);
 app.post('/reset-password/:id/:token',userPasswordReset);
 app.get('/reset-password/:id/:token',getuserdata);
-app.post('/sendcontactinfo',sendcontactinfo)
+app.post('/sendcontactinfo',sendcontactinfo);
 
 
 
