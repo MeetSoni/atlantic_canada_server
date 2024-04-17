@@ -143,7 +143,7 @@ const serviceSchema = new mongoose.Schema({
 const Services = mongoose.model('services', serviceSchema);
 
 
-
+// aBOUT_US PAGE API
 app.get("/api/about_us", async (req, res) => {
 
   try {
@@ -152,7 +152,10 @@ app.get("/api/about_us", async (req, res) => {
     const data = await about_us.find({});
     // console.log(data);
 
-    res.json(data);
+    res.send({
+      status:"success",
+      data: data
+    })
     // console.log("data fetching done")
 
   } catch (error) {
